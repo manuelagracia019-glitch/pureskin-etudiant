@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { BACKEND_URL } from '@/lib/backend-url';
 
 export async function POST(request: NextRequest) {
   try {
@@ -6,7 +7,7 @@ export async function POST(request: NextRequest) {
     const { username } = body;
     
     // Test direct to backend to check if user exists
-    const backendResponse = await fetch(`${process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'}/api/admin/users/check`, {
+    const backendResponse = await fetch(`${BACKEND_URL}/api/admin/users/check`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

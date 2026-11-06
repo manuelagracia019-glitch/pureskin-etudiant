@@ -14,7 +14,6 @@ import java.util.HashMap;
 
 @RestController
 @RequestMapping("/api/admin/payment-methods")
-@CrossOrigin(origins = "*", maxAge = 3600)
 public class AdminPaymentController {
 
     @Autowired

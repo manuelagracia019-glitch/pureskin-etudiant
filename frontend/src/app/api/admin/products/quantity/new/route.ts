@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { BACKEND_URL } from '@/lib/backend-url';
 
 export async function PUT(request: NextRequest) {
   try {
@@ -13,7 +14,7 @@ export async function PUT(request: NextRequest) {
     
     // Try to add to backend database
     try {
-      const backendResponse = await fetch('http://localhost:8080/api/admin/products', {
+      const backendResponse = await fetch(`${BACKEND_URL}/api/admin/products`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

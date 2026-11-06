@@ -3,6 +3,7 @@ package com.pureskin.etudiant.controller;
 import com.pureskin.etudiant.model.Product;
 import com.pureskin.etudiant.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,7 +20,6 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/admin/products")
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001", "http://localhost:3002"}, allowedHeaders = "*")
 public class AdminProductController {
 
     @Autowired
@@ -27,7 +27,8 @@ public class AdminProductController {
 
     // Répertoire de stockage des images
     private static final String UPLOAD_DIR = "uploads/products/";
-    private static final String BASE_URL = "http://localhost:8080";
+    @Value("${app.backend.public-url}")
+    private String baseUrl;
 
     // Obtenir tous les produits
     @GetMapping
@@ -242,6 +243,12 @@ public class AdminProductController {
     }
 
     // Méthode utilitaire pour sauvegarder les images
+    /**
+     * @param file
+     * @param productId
+     * @return
+     * @throws IOException
+     */
     private String saveImage(MultipartFile file, Long productId) throws IOException {
         // Créer le répertoire s'il n'existe pas
         Path uploadPath = Paths.get(UPLOAD_DIR);
@@ -260,6 +267,6 @@ public class AdminProductController {
         Files.copy(file.getInputStream(), filePath);
 
         // Retourner l'URL publique
-        return BASE_URL + "/api/admin/products/images/" + filename;
+        return baseUrl + "/api/admin/products/images/" + filename;
     }
 }

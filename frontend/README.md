@@ -10,6 +10,19 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Configuration du backend
+
+`.env.production` configure les URLs Railway utilisées pour la production. Dans Vercel, définissez **Root Directory** sur `frontend` pour que Next.js charge ce fichier. Copiez `.env.example` dans `.env.local` pour configurer le développement local.
+
+Pour le déploiement Vercel, ajoutez ces variables dans **Project Settings > Environment Variables**, pour les environnements souhaités, puis redéployez :
+
+```env
+NEXT_PUBLIC_API_URL=https://pureskin-etudiant-production-e70d.up.railway.app/api
+BACKEND_URL=https://pureskin-etudiant-production-e70d.up.railway.app
+```
+
+`NEXT_PUBLIC_API_URL` est utilisée par le navigateur et doit se terminer par `/api`. `BACKEND_URL` est utilisée par les routes serveur Next.js et ne doit pas inclure `/api`.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { BACKEND_URL } from '@/lib/backend-url';
 
 export async function PUT(
   request: NextRequest,
@@ -14,7 +15,7 @@ export async function PUT(
     
     // Try to update in backend database
     try {
-      const backendResponse = await fetch(`http://localhost:8080/api/admin/products/${productId}/quantity`, {
+      const backendResponse = await fetch(`${BACKEND_URL}/api/admin/products/${productId}/quantity`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

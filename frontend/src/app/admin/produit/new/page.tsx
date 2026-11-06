@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { API_BASE_URL } from "@/lib/backend-url";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { apiService, Category } from "@/lib/api";
 import { ArrowLeft, Save, Upload, X, Plus, Trash2 } from "lucide-react";
@@ -140,7 +141,7 @@ export default function NewProductPage() {
       }
 
       // 2. Sauvegarder dans la base de données via l'API admin products
-      const productResponse = await fetch('http://localhost:8080/api/admin/products', {
+      const productResponse = await fetch(`${API_BASE_URL}/admin/products`, {
         method: 'POST',
         body: formDataAdmin, // Pas de Content-Type header, FormData le définit automatiquement
       });

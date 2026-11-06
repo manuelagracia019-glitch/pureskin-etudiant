@@ -1,5 +1,6 @@
 // Service pour gérer les paiements et méthodes de paiement
 import { apiService } from './api';
+import { API_BASE_URL } from './backend-url';
 
 export interface PaymentMethod {
   id: string;
@@ -224,7 +225,7 @@ export const paymentService = {
       console.log('🔍 Attempting to fetch payments from PureSkin API...');
       
       // Récupérer toutes les transactions depuis PureSkin
-      const response = await fetch('http://localhost:8080/api/admin/payment-methods/transactions', {
+      const response = await fetch(`${API_BASE_URL}/admin/payment-methods/transactions`, {
         method: 'GET',
         headers: headers
       });
@@ -303,7 +304,7 @@ export const paymentService = {
 
       console.log('🔍 Attempting to fetch wallet stats from PureSkin API...');
 
-      const response = await fetch('http://localhost:8080/api/admin/payment-methods/overview', {
+      const response = await fetch(`${API_BASE_URL}/admin/payment-methods/overview`, {
         method: 'GET',
         headers: headers
       });
@@ -425,7 +426,7 @@ export const paymentService = {
 
       console.log('💳 Creating payment in project database...', paymentData);
 
-      const response = await fetch('http://localhost:8080/api/payments', {
+      const response = await fetch(`${API_BASE_URL}/payments`, {
         method: 'POST',
         headers: headers,
         body: JSON.stringify(paymentData)
@@ -459,7 +460,7 @@ export const paymentService = {
 
       console.log(`🔄 Updating payment status for order ${orderId} to ${status}`);
 
-      const response = await fetch(`http://localhost:8080/api/payments/${orderId}/status`, {
+      const response = await fetch(`${API_BASE_URL}/payments/${orderId}/status`, {
         method: 'PUT',
         headers: headers,
         body: JSON.stringify({ status })
@@ -491,7 +492,7 @@ export const paymentService = {
 
       console.log('🔍 Fetching project payments...');
 
-      const response = await fetch('http://localhost:8080/api/payments', {
+      const response = await fetch(`${API_BASE_URL}/payments`, {
         method: 'GET',
         headers: headers
       });
@@ -546,7 +547,7 @@ export const paymentService = {
 
       console.log('🔍 Fetching project payment stats...');
 
-      const response = await fetch('http://localhost:8080/api/payments/stats', {
+      const response = await fetch(`${API_BASE_URL}/payments/stats`, {
         method: 'GET',
         headers: headers
       });

@@ -19,6 +19,7 @@ import {
   Loader2
 } from "lucide-react";
 import { paymentService } from "@/lib/paymentService";
+import { API_BASE_URL } from "@/lib/backend-url";
 
 // Interface pour les paiements du projet
 interface ProjectPayment {
@@ -281,7 +282,7 @@ export default function AdminTransactionsPage() {
         newStatus: newStatus
       });
 
-      const response = await fetch(`http://localhost:8080/api/payments/${selectedPayment.orderId}/status`, {
+      const response = await fetch(`${API_BASE_URL}/payments/${selectedPayment.orderId}/status`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

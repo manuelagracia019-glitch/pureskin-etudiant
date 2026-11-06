@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { API_BASE_URL } from '@/lib/backend-url';
 
 export async function POST(request: NextRequest) {
   try {
@@ -21,7 +22,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Vérifier si l'email est déjà inscrit
-    const checkResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/newsletter/check`, {
+    const checkResponse = await fetch(`${API_BASE_URL}/newsletter/check`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -40,7 +41,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Inscription à la newsletter
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/newsletter/subscribe`, {
+    const response = await fetch(`${API_BASE_URL}/newsletter/subscribe`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -62,7 +63,7 @@ export async function POST(request: NextRequest) {
 
     // Envoyer l'email de bienvenue avec les avantages
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/newsletter/welcome-email`, {
+      await fetch(`${API_BASE_URL}/newsletter/welcome-email`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -103,7 +104,7 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     // Récupérer les statistiques de la communauté
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/newsletter/stats`);
+    const response = await fetch(`${API_BASE_URL}/newsletter/stats`);
     
     if (!response.ok) {
       throw new Error('Erreur récupération statistiques');

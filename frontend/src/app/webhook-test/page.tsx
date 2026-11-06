@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { API_BASE_URL } from "@/lib/backend-url";
 import { ExternalLink, Check, AlertCircle, Copy } from "lucide-react";
 
 export default function WebhookTestPage() {
-  const [webhookUrl, setWebhookUrl] = useState("http://localhost:8080/api/webhooks/faroty/payment");
+  const [webhookUrl, setWebhookUrl] = useState(`${API_BASE_URL}/webhooks/faroty/payment`);
   const [webhookSecret] = useState("whs_mGj5QgRlqgrFL8puchO-ZMk7QrXNbT1TYSxYAg");
   const [webhookId] = useState("d4c411c0-fc50-4d56-a3a5-21c47a26cc66");
   const [testPayload, setTestPayload] = useState(`{

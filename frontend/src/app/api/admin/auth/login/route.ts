@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { BACKEND_URL } from '@/lib/backend-url';
 
 export async function POST(request: NextRequest) {
   try {
@@ -7,7 +8,7 @@ export async function POST(request: NextRequest) {
     console.log('🔐 Forwarding login request to backend:', { email: body.email, password: '***' });
     
     // Forward the request to the backend
-    const backendResponse = await fetch(`${process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'}/api/admin/auth/login`, {
+    const backendResponse = await fetch(`${BACKEND_URL}/api/admin/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
+import { API_BASE_URL } from "@/lib/backend-url";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { apiService, Product, Category } from "@/lib/api";
 import { ArrowLeft, Save, Upload, X, Plus, Trash2 } from "lucide-react";
@@ -202,7 +203,7 @@ export default function EditProductPage() {
         productData.append('categoryIds[]', categoryId);
       });
 
-      const response = await fetch(`http://localhost:8080/api/admin/products/${productId}`, {
+      const response = await fetch(`${API_BASE_URL}/admin/products/${productId}`, {
         method: 'PUT',
         body: productData,
       });

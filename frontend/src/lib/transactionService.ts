@@ -1,5 +1,6 @@
 // Service pour gérer les transactions PureSkin (authentification projet)
 import { apiService } from './api';
+import { API_BASE_URL } from './backend-url';
 
 export interface Transaction {
   id: number;
@@ -44,7 +45,7 @@ export const transactionService = {
       console.log('🔍 Attempting to fetch transactions from PureSkin API...');
       
       // Récupérer toutes les transactions depuis PureSkin
-      const response = await fetch('http://localhost:8080/api/admin/payment-methods/transactions', {
+      const response = await fetch(`${API_BASE_URL}/admin/payment-methods/transactions`, {
         method: 'GET',
         headers: headers
       });
@@ -103,7 +104,7 @@ export const transactionService = {
 
       console.log('🔍 Attempting to fetch transaction stats from PureSkin API...');
 
-      const response = await fetch('http://localhost:8080/api/admin/payment-methods/overview', {
+      const response = await fetch(`${API_BASE_URL}/admin/payment-methods/overview`, {
         method: 'GET',
         headers: headers
       });

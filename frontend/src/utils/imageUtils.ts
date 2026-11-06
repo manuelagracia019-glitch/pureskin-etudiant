@@ -1,3 +1,5 @@
+import { BACKEND_URL } from "@/lib/backend-url";
+
 // Utilitaire pour gérer les URLs des images de produits
 export const getProductImageUrl = (product?: any): string | null => {
   // Si c'est une chaîne de caractères directe (ancien usage)
@@ -23,12 +25,12 @@ export const getProductImageUrl = (product?: any): string | null => {
 
   // Si l'URL commence par /api/admin/products/images/, c'est une image du backend
   if (imageUrl.startsWith('/api/admin/products/images/')) {
-    return "http://localhost:8080" + imageUrl;
+    return BACKEND_URL + imageUrl;
   }
 
   // Si l'URL contient api/admin/products/images/, c'est une image du backend
   if (imageUrl.includes('api/admin/products/images/')) {
-    return imageUrl.startsWith('http') ? imageUrl : "http://localhost:8080/" + imageUrl;
+    return imageUrl.startsWith('http') ? imageUrl : `${BACKEND_URL}/${imageUrl.replace(/^\/+/, '')}`;
   }
 
   // Pour les autres cas, retourner null (pas d'image)

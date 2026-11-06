@@ -11,6 +11,7 @@ import { farotyService } from "@/lib/farotyService";
 import { CartItem, cartService } from "@/lib/cart";
 import { paymentIntegrationService } from "@/lib/paymentIntegrationService";
 import { productService } from "@/lib/productService";
+import { API_BASE_URL } from "@/lib/backend-url";
 
 export default function PaymentCheckoutPage() {
   const router = useRouter();
@@ -100,7 +101,7 @@ export default function PaymentCheckoutPage() {
     console.log('📦 Récupération détails commande pour ID:', orderId);
     try {
       // Essayer l'API backend d'abord
-      const response = await fetch(`http://localhost:8080/api/orders/${orderId}`);
+      const response = await fetch(`${API_BASE_URL}/orders/${orderId}`);
       
       if (response.ok) {
         const data = await response.json();
@@ -200,7 +201,7 @@ export default function PaymentCheckoutPage() {
 
       // Essayer de créer la commande dans le backend
       try {
-        const response = await fetch('http://localhost:8080/api/orders', {
+        const response = await fetch(`${API_BASE_URL}/orders`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

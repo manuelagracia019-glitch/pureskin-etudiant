@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { BACKEND_URL } from '@/lib/backend-url';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     
     // Forward the request to the backend
-    const backendResponse = await fetch(`${process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'}/api/admin/auth/refresh`, {
+    const backendResponse = await fetch(`${BACKEND_URL}/api/admin/auth/refresh`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

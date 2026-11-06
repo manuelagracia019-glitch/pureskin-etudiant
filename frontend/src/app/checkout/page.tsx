@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { cartService, CartItem } from "@/lib/cart";
 import { useRouter } from "next/navigation";
+import { API_BASE_URL } from "@/lib/backend-url";
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -99,7 +100,7 @@ export default function CheckoutPage() {
 
       console.log('Données de commande envoyées:', orderData);
 
-      const response = await fetch('http://localhost:8080/api/orders', {
+      const response = await fetch(`${API_BASE_URL}/orders`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

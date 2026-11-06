@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
+import { BACKEND_URL } from '@/lib/backend-url';
 
 export async function POST(request: NextRequest) {
   try {
@@ -74,7 +75,7 @@ export async function POST(request: NextRequest) {
         backendFormData.append('categoryIds[]', catId);
       });
 
-      const backendResponse = await fetch('http://localhost:8080/api/admin/products', {
+      const backendResponse = await fetch(`${BACKEND_URL}/api/admin/products`, {
         method: 'POST',
         body: backendFormData,
       });

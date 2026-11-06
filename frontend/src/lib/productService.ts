@@ -1,12 +1,11 @@
 import { Product } from './api';
+import { API_BASE_URL } from './backend-url';
 
 class ProductService {
-  private readonly API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
-
   // Récupérer tous les produits depuis le backend
   async getAllProducts(): Promise<Product[]> {
     try {
-      const response = await fetch(`${this.API_BASE_URL}/products`);
+      const response = await fetch(`${API_BASE_URL}/products`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -20,7 +19,7 @@ class ProductService {
   // Récupérer un produit par son ID
   async getProductById(id: number): Promise<Product | null> {
     try {
-      const response = await fetch(`${this.API_BASE_URL}/products/${id}`);
+      const response = await fetch(`${API_BASE_URL}/products/${id}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
