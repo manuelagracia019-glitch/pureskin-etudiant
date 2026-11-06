@@ -1,6 +1,10 @@
 // API Service for PureSkin Étudiant Frontend
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
+import { BACKEND_API_URL } from './backend-url';
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL
+  ? process.env.NEXT_PUBLIC_API_URL.replace(/\/+$/, '').replace(/\/api$/i, '') + '/api'
+  : BACKEND_API_URL;
 
 // Types
 export interface Product {

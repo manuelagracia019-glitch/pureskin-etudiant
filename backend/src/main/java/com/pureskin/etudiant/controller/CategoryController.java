@@ -10,7 +10,6 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
 public class CategoryController {
 
     @Autowired
@@ -31,15 +30,13 @@ public class CategoryController {
     @GetMapping("/categories/{id}")
     public ResponseEntity<Category> getCategory(@PathVariable Long id) {
         Optional<Category> category = categoryService.getCategoryById(id);
-        return category.map(ResponseEntity::ok)
-                      .orElse(ResponseEntity.notFound().build());
+        return category.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/categories/slug/{slug}")
     public ResponseEntity<Category> getCategoryBySlug(@PathVariable String slug) {
         Optional<Category> category = categoryService.getCategoryBySlug(slug);
-        return category.map(ResponseEntity::ok)
-                      .orElse(ResponseEntity.notFound().build());
+        return category.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/categories/{id}")
@@ -47,8 +44,7 @@ public class CategoryController {
         Optional<Category> existingCategory = categoryService.getCategoryById(id);
         if (existingCategory.isPresent()) {
             category.setId(id);
-            Category updatedCategory = categoryService.saveCategory(category);
-            return ResponseEntity.ok(updatedCategory);
+            return ResponseEntity.ok(categoryService.saveCategory(category));
         }
         return ResponseEntity.notFound().build();
     }
