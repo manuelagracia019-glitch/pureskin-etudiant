@@ -9,7 +9,7 @@ const protectedRoutes = ['/admin/dashboard', '/admin/orders', '/admin/products',
 // Routes publiques (ne nécessitent pas d'authentification)
 const publicRoutes = ['/admin/login'];
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Si c'est une route publique, continuer
