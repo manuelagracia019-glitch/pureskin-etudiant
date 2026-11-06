@@ -2,11 +2,11 @@
 FROM node:20-alpine AS frontend-builder
 
 WORKDIR /app/frontend
-COPY frontend/package.json frontend/yarn.lock ./
-RUN yarn install
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci
 
 COPY frontend/ ./
-RUN yarn build
+RUN npm run build
 
 # Backend build stage
 FROM maven:3.9-eclipse-temurin-25 AS backend-builder
