@@ -1,7 +1,13 @@
+import { BACKEND_API_URL } from './backend-url';
 import { Product } from './api';
 import { API_BASE_URL } from './backend-url';
 
 class ProductService {
+<<<<<<< HEAD
+=======
+  private readonly API_BASE_URL = BACKEND_API_URL;
+
+>>>>>>> 20452f22025a409c3bc9b142c94441513bb64a27
   // Récupérer tous les produits depuis le backend
   async getAllProducts(): Promise<Product[]> {
     try {
@@ -34,16 +40,11 @@ class ProductService {
   async updateCartPrices(): Promise<void> {
     try {
       console.log('🔄 Mise à jour des prix du panier depuis le backend...');
-      
-      // Récupérer les produits actuels du backend
       const backendProducts = await this.getAllProducts();
       const productMap = new Map(backendProducts.map(p => [p.id, p]));
-      
-      // Récupérer le panier actuel
       const cartState = cartService.getCart();
       let updatedItems = false;
-      
-      // Mettre à jour les prix pour chaque article du panier
+
       for (const item of cartState.items) {
         const backendProduct = productMap.get(item.id);
         if (backendProduct && backendProduct.price !== item.price) {
@@ -52,15 +53,13 @@ class ProductService {
           updatedItems = true;
         }
       }
-      
-      // Sauvegarder le panier mis à jour
+
       if (updatedItems) {
-        cartService.getCart(); // Recalculer les totaux
+        cartService.getCart();
         console.log('✅ Prix du panier mis à jour');
       } else {
         console.log('ℹ️ Les prix du panier sont déjà à jour');
       }
-      
     } catch (error) {
       console.error('❌ Erreur lors de la mise à jour des prix:', error);
     }

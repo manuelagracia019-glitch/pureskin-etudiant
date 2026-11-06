@@ -1,5 +1,14 @@
 // API Service for PureSkin Étudiant Frontend
+<<<<<<< HEAD
 import { API_BASE_URL } from "./backend-url";
+=======
+
+import { BACKEND_API_URL } from './backend-url';
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL
+  ? process.env.NEXT_PUBLIC_API_URL.replace(/\/+$/, '').replace(/\/api$/i, '') + '/api'
+  : BACKEND_API_URL;
+>>>>>>> 20452f22025a409c3bc9b142c94441513bb64a27
 
 // Types
 export interface Product {

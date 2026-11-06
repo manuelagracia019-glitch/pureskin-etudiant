@@ -1,60 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
+<<<<<<< HEAD
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import { BACKEND_URL } from '@/lib/backend-url';
+=======
+import { BACKEND_ORIGIN } from '@/lib/backend-url';
+>>>>>>> 20452f22025a409c3bc9b142c94441513bb64a27
 
 export async function POST(request: NextRequest) {
   try {
-    console.log('📦 Creating new product...');
-    
     const formData = await request.formData();
-    
-    // Extract form fields
-    const name = formData.get('name') as string;
-    const slug = formData.get('slug') as string;
-    const description = formData.get('description') as string;
-    const price = formData.get('price') as string;
-    const original_price = formData.get('original_price') as string;
-    const category_id = formData.get('category_id') as string;
-    const badge = formData.get('badge') as string;
-    const stock_quantity = formData.get('stock_quantity') as string;
-    const is_active = formData.get('is_active') === 'true';
-    const is_featured = formData.get('is_featured') === 'true';
-    const image = formData.get('image') as File;
-    
-    // Get category IDs as array
-    const categoryIds = formData.getAll('categoryIds[]') as string[];
-    
-    console.log('Product data:', { name, slug, price, categoryIds });
+    const token = request.headers.get('authorization');
+    const headers = new Headers();
+    if (token) headers.set('Authorization', token);
 
-    // Handle image upload
-    let imagePath = null;
-    if (image && image.size > 0) {
-      try {
-        // Create products directory if it doesn't exist
-        const productsDir = join(process.cwd(), 'public', 'images', 'products');
-        await mkdir(productsDir, { recursive: true });
-        
-        // Generate unique filename
-        const timestamp = Date.now();
-        const filename = `${slug}-${timestamp}.${image.name.split('.').pop()}`;
-        const fullPath = join(productsDir, filename);
-        
-        // Save image
-        const buffer = Buffer.from(await image.arrayBuffer());
-        await writeFile(fullPath, buffer);
-        
-        imagePath = `/images/products/${filename}`;
-        console.log('✅ Image saved:', imagePath);
-      } catch (error) {
-        console.error('❌ Error saving image:', error);
-        return NextResponse.json(
-          { error: 'Failed to save image' },
-          { status: 500 }
-        );
-      }
-    }
+    const backendResponse = await fetch(`${BACKEND_ORIGIN}/api/admin/products`, {
+      method: 'POST',
+      headers,
+      body: formData,
+      signal: AbortSignal.timeout(30000),
+    });
 
+<<<<<<< HEAD
     // Try to save to backend first
     try {
       const backendFormData = new FormData();
@@ -115,15 +82,18 @@ export async function POST(request: NextRequest) {
     console.log('✅ Product created locally:', newProduct);
     return NextResponse.json(newProduct);
     
+=======
+    const body = await backendResponse.text();
+    return new NextResponse(body, {
+      status: backendResponse.status,
+      headers: { 'Content-Type': backendResponse.headers.get('content-type') || 'application/json' },
+    });
+>>>>>>> 20452f22025a409c3bc9b142c94441513bb64a27
   } catch (error) {
-    console.error('❌ Error creating product:', error);
+    console.error('Product backend request failed:', error);
     return NextResponse.json(
-      { error: 'Failed to create product' },
-      { status: 500 }
+      { success: false, message: 'Backend inaccessible lors de la création du produit.' },
+      { status: 502 },
     );
   }
-}
-
-export async function GET() {
-  return NextResponse.json({ message: 'Method not allowed' }, { status: 405 });
 }
