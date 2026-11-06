@@ -1,9 +1,11 @@
 "use client";
 
+import * as React from "react";
 import { useRouter } from "next/navigation";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { 
   Users, 
+  UserPlus,
   Package, 
   CreditCard, 
   Wallet, 
@@ -16,31 +18,9 @@ export function AdminNav() {
   const router = useRouter();
   const { logout } = useAdminAuth();
 
-  const handleLogout = async () => {
-    try {
-      // Appeler l'API de déconnexion
-      await fetch('/api/admin/auth/logout', {
-        method: 'POST',
-        credentials: 'include'
-      });
-      
-      // Nettoyer le localStorage
-      localStorage.removeItem('admin_token');
-      localStorage.removeItem('admin_refresh_token');
-      localStorage.removeItem('admin_email');
-      localStorage.removeItem('admin_user');
-      
-      // Rediriger vers la page de login
-      router.push('/admin/login');
-    } catch (error) {
-      console.error('Erreur lors de la déconnexion:', error);
-      // En cas d'erreur, quand même nettoyer et rediriger
-      localStorage.removeItem('admin_token');
-      localStorage.removeItem('admin_refresh_token');
-      localStorage.removeItem('admin_email');
-      localStorage.removeItem('admin_user');
-      router.push('/admin/login');
-    }
+  const handleLogout = () => {
+    logout();
+    router.push("/admin/login");
   };
 
   return (
@@ -58,6 +38,14 @@ export function AdminNav() {
             >
               <Package className="w-4 h-4 inline mr-2" />
               Produits
+            </button>
+
+            <button
+              onClick={() => router.push("/admin/create-admin")}
+              className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+            >
+              <UserPlus className="w-4 h-4 inline mr-2" />
+              Créer un admin
             </button>
             
             <button

@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import { FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -26,6 +27,7 @@ export default function CreateAdminPage() {
     confirmPassword: "",
   });
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -37,6 +39,7 @@ export default function CreateAdminPage() {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError("");
+    setSuccess("");
 
     if (form.password !== form.confirmPassword) {
       setError("Les mots de passe ne correspondent pas.");
@@ -72,7 +75,15 @@ export default function CreateAdminPage() {
         return;
       }
 
-      router.push("/admin/produit");
+      setSuccess(data.message || "Le compte administrateur a été créé avec succès.");
+      setForm({
+        firstName: "",
+        lastName: "",
+        username: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      });
     } catch (requestError) {
       console.error("Erreur lors de la création de l'administrateur:", requestError);
       setError("Impossible de contacter le serveur. Veuillez réessayer.");
@@ -107,6 +118,11 @@ export default function CreateAdminPage() {
           {error && (
             <div role="alert" className="rounded border border-red-200 bg-red-50 px-4 py-3 text-red-700">
               {error}
+            </div>
+          )}
+          {success && (
+            <div role="status" className="rounded border border-green-200 bg-green-50 px-4 py-3 text-green-700">
+              {success}
             </div>
           )}
 
