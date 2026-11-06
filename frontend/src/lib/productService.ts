@@ -1,13 +1,7 @@
-import { BACKEND_API_URL } from './backend-url';
 import { Product } from './api';
 import { API_BASE_URL } from './backend-url';
 
 class ProductService {
-<<<<<<< HEAD
-=======
-  private readonly API_BASE_URL = BACKEND_API_URL;
-
->>>>>>> 20452f22025a409c3bc9b142c94441513bb64a27
   // Récupérer tous les produits depuis le backend
   async getAllProducts(): Promise<Product[]> {
     try {

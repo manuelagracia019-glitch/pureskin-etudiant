@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { API_BASE_URL } from "@/lib/backend-url";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { apiService, Category } from "@/lib/api";
 import { ArrowLeft, Save, Upload, X, Plus, Trash2 } from "lucide-react";
@@ -121,31 +120,7 @@ export default function NewProductPage() {
       if (formData.badge) productForm.append('badge', formData.badge);
       if (formData.image) productForm.append('image', formData.image);
 
-<<<<<<< HEAD
-      // 1. Créer le produit directement avec l'API admin qui gère l'image
-      const formDataAdmin = new FormData();
-      formDataAdmin.append('name', formData.name);
-      formDataAdmin.append('slug', formData.slug);
-      formDataAdmin.append('description', formData.description);
-      formDataAdmin.append('price', formData.price);
-      formDataAdmin.append('category', formData.category_id || '');
-      formDataAdmin.append('stock', formData.stock_quantity || '0');
-      formDataAdmin.append('active', 'true');
-      
-      if (formData.badge) {
-        formDataAdmin.append('badge', formData.badge);
-      }
-      
-      // Ajouter l'image si elle existe
-      if (formData.image) {
-        formDataAdmin.append('image', formData.image);
-      }
-
-      // 2. Sauvegarder dans la base de données via l'API admin products
-      const productResponse = await fetch(`${API_BASE_URL}/admin/products`, {
-=======
       const productResponse = await fetch('/api/admin/products', {
->>>>>>> 20452f22025a409c3bc9b142c94441513bb64a27
         method: 'POST',
         headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined,
         body: productForm,
