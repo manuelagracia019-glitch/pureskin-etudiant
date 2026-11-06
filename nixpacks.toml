@@ -1,7 +1,7 @@
 # Nixpacks configuration for Railway deployment
 
 [phases.setup]
-nixPkgs = ["...", "postgresql", "nodejs-20_x", "maven"]
+nixPkgs = ["...", "postgresql", "nodejs-20_x", "jdk25", "maven"]
 
 [phases.build]
 cmds = [

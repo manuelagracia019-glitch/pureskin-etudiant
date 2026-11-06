@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 // import { AdminNav } from "@/components/AdminNav";
 
@@ -12,13 +13,9 @@ export default function AdminLoginPage() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [isMounted, setIsMounted] = useState(false);
+  const isMounted = useSyncExternalStore(() => () => {}, () => true, () => false);
   const router = useRouter();
   const { login } = useAdminAuth();
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,7 +26,8 @@ export default function AdminLoginPage() {
       const success = await login(credentials);
       if (success) {
         console.log('✅ Connexion réussie - redirection vers la gestion des produits');
-        router.push("/admin/produit");
+        const redirect = new URLSearchParams(window.location.search).get("redirect");
+        router.push(redirect === "/admin/create-admin" ? redirect : "/admin/produit");
       } else {
         setError("Identifiants incorrects. Veuillez réessayer.");
       }
@@ -71,7 +69,7 @@ export default function AdminLoginPage() {
           <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="text-center">
           <h2 className="text-3xl font-bold text-gray-900">PureSkin Admin</h2>
-          <p className="mt-2 text-gray-600">Connectez-vous à votre espace d'administration</p>
+          <p className="mt-2 text-gray-600">Connectez-vous à votre espace d&apos;administration</p>
         </div>
       </div>
           <form className="space-y-6" onSubmit={handleSubmit}>
@@ -134,6 +132,16 @@ export default function AdminLoginPage() {
               </button>
             </div>
           </form>
+
+          <p className="mt-6 text-center text-sm text-gray-600">
+            Vous êtes déjà administrateur ?{" "}
+            <Link
+              href="/admin/create-admin"
+              className="font-medium text-green-700 hover:text-green-800"
+            >
+              Créer un autre administrateur
+            </Link>
+          </p>
 
           {/* <div className="mt-6">
             <div className="relative">

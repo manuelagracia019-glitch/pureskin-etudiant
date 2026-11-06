@@ -9,7 +9,7 @@ COPY frontend/ ./
 RUN yarn build
 
 # Backend build stage
-FROM maven:3.8-openjdk-17 AS backend-builder
+FROM maven:3.9-eclipse-temurin-25 AS backend-builder
 
 WORKDIR /app/backend
 COPY backend/pom.xml ./
@@ -19,7 +19,7 @@ COPY backend/src ./src
 RUN mvn clean package -DskipTests
 
 # Final runtime stage
-FROM eclipse-temurin:17-jre
+FROM eclipse-temurin:25-jre
 
 WORKDIR /app
 

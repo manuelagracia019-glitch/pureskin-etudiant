@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -38,6 +39,11 @@ public class AdminAuthController {
 
             String loginIdentifier = loginRequest.get("email"); // Changé de username à email
             String password = loginRequest.get("password");
+            if (loginIdentifier == null || loginIdentifier.isBlank() || password == null || password.isBlank()) {
+                return ResponseEntity.badRequest().body(Map.of(
+                        "success", false,
+                        "message", "Adresse e-mail et mot de passe requis"));
+            }
 
             // Vérifier si l'utilisateur existe et est admin
             User user = userService.findByEmailOrUsername(loginIdentifier).orElse(null);
@@ -50,7 +56,7 @@ public class AdminAuthController {
             }
 
             // Vérifier si l'utilisateur est admin
-            if (!"admin".equalsIgnoreCase(user.getRole()) && !"ADMIN".equals(user.getRole()) && !"SUPER_ADMIN".equals(user.getRole())) {
+            if (!isAdminRole(user.getRole())) {
                 System.out.println("❌ Rôle utilisateur: " + user.getRole() + " - accès refusé");
                 Map<String, Object> response = new HashMap<>();
                 response.put("success", false);
@@ -68,8 +74,7 @@ public class AdminAuthController {
                 return ResponseEntity.status(403).body(response);
             }
 
-            // Authentification manuelle pour contourner les problèmes de Spring Security
-            if (!"admin123".equals(password)) {
+            if (!userService.checkPassword(password, user.getPasswordHash())) {
                 System.out.println("❌ Mot de passe incorrect pour: " + user.getEmail());
                 Map<String, Object> response = new HashMap<>();
                 response.put("success", false);
@@ -79,9 +84,8 @@ public class AdminAuthController {
             
             System.out.println("✅ Mot de passe validé");
 
-            // Génération des tokens manuels
-            String accessToken = "admin-access-token-" + System.currentTimeMillis();
-            String refreshToken = "admin-refresh-token-" + System.currentTimeMillis();
+            String accessToken = tokenProvider.generateAccessTokenFromEmail(user.getEmail());
+            String refreshToken = tokenProvider.generateRefreshTokenFromEmail(user.getEmail());
 
             // Création de la réponse
             Map<String, Object> userData = new HashMap<>();
@@ -93,6 +97,7 @@ public class AdminAuthController {
             userData.put("languageCode", "fr");
             userData.put("countryCode", user.getCountryCode());
             userData.put("guest", false);
+            userData.put("role", user.getRole());
 
             Map<String, Object> deviceData = new HashMap<>();
             deviceData.put("deviceId", "device-" + UUID.randomUUID().toString());
@@ -146,6 +151,83 @@ public class AdminAuthController {
         }
     }
 
+    @PostMapping("/register")
+    public ResponseEntity<Map<String, Object>> registerAdmin(
+            @RequestHeader(value = "Authorization", required = false) String authorization,
+            @RequestBody Map<String, String> request) {
+        if (authorization == null || !authorization.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).body(Map.of(
+                    "success", false,
+                    "message", "Authentification administrateur requise"));
+        }
+
+        String token = authorization.substring(7);
+        if (!tokenProvider.validateToken(token)) {
+            return ResponseEntity.status(401).body(Map.of(
+                    "success", false,
+                    "message", "Session administrateur invalide ou expirée"));
+        }
+
+        User currentAdmin = userService.findByEmail(tokenProvider.getEmailFromToken(token)).orElse(null);
+        if (currentAdmin == null || !currentAdmin.isActive()
+                || !isAdminRole(currentAdmin.getRole())) {
+            return ResponseEntity.status(403).body(Map.of(
+                    "success", false,
+                    "message", "Seul un administrateur actif peut créer un compte"));
+        }
+
+        String firstName = request.get("firstName");
+        String lastName = request.get("lastName");
+        String username = request.get("username");
+        String email = request.get("email");
+        String password = request.get("password");
+        if (isBlank(firstName) || isBlank(lastName) || isBlank(username)
+                || isBlank(email) || isBlank(password) || password.length() < 8) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "Tous les champs sont requis et le mot de passe doit contenir au moins 8 caractères"));
+        }
+
+        String normalizedUsername = username.trim();
+        String normalizedEmail = email.trim().toLowerCase(Locale.ROOT);
+        if (!normalizedEmail.matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "Adresse e-mail invalide"));
+        }
+        if (userService.existsByUsername(normalizedUsername)) {
+            return ResponseEntity.status(409).body(Map.of(
+                    "success", false,
+                    "message", "Ce nom d'utilisateur est déjà utilisé"));
+        }
+        if (userService.existsByEmail(normalizedEmail)) {
+            return ResponseEntity.status(409).body(Map.of(
+                    "success", false,
+                    "message", "Cette adresse e-mail est déjà utilisée"));
+        }
+
+        User newAdmin = new User();
+        newAdmin.setFirstName(firstName.trim());
+        newAdmin.setLastName(lastName.trim());
+        newAdmin.setUsername(normalizedUsername);
+        newAdmin.setEmail(normalizedEmail);
+        newAdmin.setRole("admin");
+        newAdmin.setPasswordHash(userService.encodePassword(password));
+        userService.saveUser(newAdmin);
+
+        return ResponseEntity.status(201).body(Map.of(
+                "success", true,
+                "message", "Compte administrateur créé avec succès"));
+    }
+
+    private boolean isAdminRole(String role) {
+        return "admin".equalsIgnoreCase(role) || "super_admin".equalsIgnoreCase(role);
+    }
+
+    private boolean isBlank(String value) {
+        return value == null || value.isBlank();
+    }
+
     // Endpoint de rafraîchissement du token
     @PostMapping("/refresh")
     public ResponseEntity<Map<String, Object>> refreshToken(@RequestBody Map<String, String> refreshRequest) {
@@ -163,7 +245,7 @@ public class AdminAuthController {
             String email = tokenProvider.getEmailFromToken(refreshToken);
             User user = userService.findByEmail(email).orElse(null);
 
-            if (user == null || !user.isActive()) {
+            if (user == null || !user.isActive() || !isAdminRole(user.getRole())) {
                 Map<String, Object> response = new HashMap<>();
                 response.put("success", false);
                 response.put("message", "Utilisateur non trouvé ou inactif");
@@ -234,7 +316,7 @@ public class AdminAuthController {
             String email = tokenProvider.getEmailFromToken(jwtToken);
             User user = userService.findByEmail(email).orElse(null);
 
-            if (user == null || !user.isActive()) {
+            if (user == null || !user.isActive() || !isAdminRole(user.getRole())) {
                 Map<String, Object> response = new HashMap<>();
                 response.put("success", false);
                 response.put("message", "Utilisateur non trouvé ou inactif");

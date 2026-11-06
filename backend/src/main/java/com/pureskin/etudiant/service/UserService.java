@@ -56,6 +56,10 @@ public class UserService implements UserDetailsService {
         }
         return userRepository.save(user);
     }
+
+    public String encodePassword(String rawPassword) {
+        return passwordEncoder.encode(rawPassword);
+    }
     
     // Mettre à jour la dernière connexion
     public void updateLastLogin(Long userId) {
